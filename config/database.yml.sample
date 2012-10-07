@@ -1,0 +1,11 @@
+# database.yml
+development:
+  adapter: mysql
+  database: vp_project_1
+  username: vp
+  password: velocity
+test:
+  adapter: mysql
+  database: vp_project_1_test
+  username: vp
+  password: velocity
