@@ -16,11 +16,17 @@ describe "service" do
 
 	before(:each) do
 		User.delete_all
-		User.create(
+		User.create([{
 			:name     => "david",
 			:email    => "jdsilveira@gmail.com",
 			:password => "password",
-			:bio      => "ruby_man")
+			:bio      => "ruby_man"
+			},{
+			:name     => "paraborrar",
+			:email    => "paraborrar@gmail.com",
+			:password => "todelete",
+			:bio      => "todelete"
+		}])
 	end
 
 	describe "GET on /api/v1/users/:name" do 
@@ -65,6 +71,15 @@ describe "service" do
 			get '/api/v1/users/david'
 			attributes = JSON.parse(last_response.body)["user"]
 			attributes["bio"].should == "ex-php"
+		end
+	end
+
+	describe "DELETE on /api/v1/users/:name" do
+		it "should remove a given user with name 'paraborrar'" do
+			delete '/api/v1/users/paraborrar', {}.to_json
+			last_response.should be_ok
+			get '/api/v1/users/paraborrar'
+			last_response.should_not be_ok
 		end
 	end
 
