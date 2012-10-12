@@ -18,13 +18,13 @@ databases = YAML.load_file('config/database.yml')
 ActiveRecord::Base.establish_connection(databases[env])
 log.debug "#{databases[env]} database connection established"
 
-# HTTP entry points
-# get a user by name
-
+# hello world but in spanish :)
 get '/api/v1/hello' do
 	"hola"
 end
 
+# Getting information about a given user
+# usage /api/v1/users/aboyon
 get '/api/v1/users/:name' do
 	user = User.find_by_name(params[:name])
 	if user
@@ -34,6 +34,7 @@ get '/api/v1/users/:name' do
 	end
 end
 
+# Creating a user, but this time, using POST method
 post '/api/v1/users' do
 	begin
 		user = User.create(JSON.parse(request.body.read))
@@ -47,6 +48,8 @@ post '/api/v1/users' do
 	end
 end
 
+# Updating/editing user for a given user. Target URL is the same used for
+# DELETE or GET user information
 put '/api/v1/users/:name' do
 	user = User.find_by_name(params[:name])
 	if user
@@ -64,6 +67,8 @@ put '/api/v1/users/:name' do
 	end
 end
 
+# deleting a user, using the DELETE method. Target URL is the same used for
+# UPDATE or GET user information
 delete '/api/v1/users/:name' do
 	user = User.find_by_name(params[:name])
 	if user

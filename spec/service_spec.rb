@@ -29,22 +29,28 @@ describe "service" do
 		}])
 	end
 
-	describe "GET on /api/v1/users/:name" do 
-
+	describe "GET on /api/v1/hello" do
 		it "should return hello" do
 			get "/api/v1/hello"
 			last_response.should be_ok
 			last_response.body.should == "hola"
-		end		
+		end
+	end
 
+	describe "GET on /api/v1/users/:name" do 
 		it "should return a user by name" do
 			get "/api/v1/users/david"
 			last_response.should be_ok
 			attributes = JSON.parse(last_response.body)
 			attributes["user"]["name"].should == "david"
-			attributes["user"]["email"].should == "jdsilveira@gmail.com"
 		end
 
+		it "should return a user by name and the email should be valid" do
+			get "/api/v1/users/paraborrar"
+			last_response.should be_ok
+			attributes = JSON.parse(last_response.body)
+			attributes["user"]["email"].should == "paraborrar@gmail.com"
+		end
 	end
 
 	describe "POST on /api/v1/users" do
@@ -63,6 +69,16 @@ describe "service" do
 	end
 
 	describe "PUT on /api/v1/users/:name" do
+
+		# just a test to check that you cannot use the PUT method without
+		# provide a username
+		it "should thrown an error if no user is given" do
+			put '/api/v1/users', {
+				:bio => "na na na"
+			}
+			last_response.should_not be_ok
+		end
+
 		it "should change the biography for user ana" do
 			put '/api/v1/users/david', {
 				:bio => 'ex-php'
