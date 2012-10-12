@@ -18,6 +18,14 @@ databases = YAML.load_file('config/database.yml')
 ActiveRecord::Base.establish_connection(databases[env])
 log.debug "#{databases[env]} database connection established"
 
+if env == "test"
+	puts "Populating the test environment with testing data"
+	User.delete_all
+	User.create(:name => 'tito', :email => 'tito@cosa.com', :bio => 'tu-vieja-me-agita')
+else
+
+end
+
 # hello world but in spanish :)
 get '/api/v1/hello' do
 	"hola"
