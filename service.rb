@@ -78,3 +78,14 @@ delete '/api/v1/users/:name' do
 		error 404, {:error => 'User not found'}.to_json
 	end
 end
+
+# now, let's validate a user using his credentials
+post '/api/v1/users/:name/login' do
+	request_info = JSON.parse(request.body.read)
+	user = User.find_by_name_and_password(params[:name], request_info['password'])
+	if (user)
+		user.to_json
+	else
+		error 400, {:error => 'invalid credentials'}.to_json
+	end
+end

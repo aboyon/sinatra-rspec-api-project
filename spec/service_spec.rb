@@ -85,6 +85,27 @@ describe "service" do
 		end
 	end
 
+	describe "POST on /api/v1/users/:user/login" do
+
+		it "should validate a given user with a valid credentials" do
+			post '/api/v1/users/david/login', {
+					:password => 'password'
+				}.to_json
+			last_response.should be_ok
+			attributes = JSON.parse(last_response.body)
+			attributes['user']['email'].should == 'jdsilveira@gmail.com'
+		end
+
+		it "should reject the user credentials, valid user but wrong password" do
+			post '/api/v1/users/david/login', {
+					:password => 'wrongpassword'
+				}.to_json
+			last_response.status.should == 400
+			attributes = JSON.parse(last_response.body)
+			attributes['error'].downcase.should == 'invalid credentials'
+		end
+	end
+
 	describe "PUT on /api/v1/users/:name" do
 
 		# just a test to check that you cannot use the PUT method without
