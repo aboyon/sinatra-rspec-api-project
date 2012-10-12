@@ -51,6 +51,13 @@ describe "service" do
 			attributes = JSON.parse(last_response.body)
 			attributes["user"]["email"].should == "paraborrar@gmail.com"
 		end
+
+		it "should return a NOT found error message" do
+			get "/api/v1/users/notfounduser"
+			last_response.should_not be_ok
+			attributes = JSON.parse(last_response.body)
+			attributes["error"].should == "user not found"
+		end
 	end
 
 	describe "POST on /api/v1/users" do
@@ -66,6 +73,16 @@ describe "service" do
 			attributes = JSON.parse(last_response.body)
 			attributes["user"]["name"].downcase.should == 'ana'
 		end
+
+		it "should not create a user since data is not valid" do
+			post '/api/v1/users', {
+				:bio		=> "mi hija"
+			}.to_json
+			last_response.should_not be_ok
+			attributes = JSON.parse(last_response.body)
+			attributes["name"].first.should == "can't be blank"
+			attributes["email"].first.should == "can't be blank"
+		end
 	end
 
 	describe "PUT on /api/v1/users/:name" do
@@ -75,7 +92,7 @@ describe "service" do
 		it "should thrown an error if no user is given" do
 			put '/api/v1/users', {
 				:bio => "na na na"
-			}
+			}.to_json
 			last_response.should_not be_ok
 		end
 
