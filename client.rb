@@ -1,4 +1,3 @@
-require 'rubygems'
 require 'typhoeus'
 require 'json'
 
@@ -15,6 +14,15 @@ class User
 			JSON.parse(response.body)
 		elsif (response.code == 404)
 			nil
+		else
+			raise response.body
+		end
+	end
+
+	def self.create(attributes)
+		response = Typhoeus::Request::post("#{base_uri}/api/v1/users",:body => attributes.to_json)
+		if (response.code == 200)
+			JSON.parse(response.body)
 		else
 			raise response.body
 		end
